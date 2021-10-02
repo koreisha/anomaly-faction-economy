@@ -1,0 +1,36 @@
+function on_mcm_load()
+    op ={ id= "faction_economy", sh=true ,gr =
+			{
+				{ id = "title", type= "slide", link= "ui_options_slider_economy_diff", text="ui_mcm_faction_economy_title", size= {512,50},spacing= 20 },
+				{ id = "use_faction_discounts" 			, type = "check", val = 1, def = true},
+				{ id = "use_goodwill_mul" 				, type = "check", val = 1, def = true},
+				{ id = "use_ignore_faction_goodwill" 	, type = "check", val = 1, def = true},
+				{ id = "use_reputation_mul" 			, type = "check", val = 1, def = true},
+				{ id = "use_north_level_mul" 			, type = "check", val = 1, def = true},
+				{ id = "goodwill_mul"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
+				{ id = "rep_mul"  						, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
+				{ id = "line"	     					, type = "line" },
+				{ id = "chance_for_extra_item"  		, type = "track", val = 2, min = 0, max = 100, step = 1, def = 40},
+				{ id = "required_supply_level"			, type = "track", val = 2, min = 0, max = 5, step = 1, def = 2}
+				
+			}
+		}
+    return op
+end
+
+local defaults = {
+    ["use_faction_discounts"] = true,
+	["use_goodwill_mul"] = true,
+	["use_ignore_faction_goodwill"] = false,
+	["use_reputation_mul"] = true,
+	["use_north_level_mul"] = true,
+	["chance_for_extra_item"] = 40,
+	["goodwill_mul"] = 2,
+	["rep_mul"] = 2,
+	["required_supply_level"] = 2
+}
+
+
+function get_config(key)
+    if ui_mcm then return ui_mcm.get("faction_economy/"..key) else return defaults[key] end
+end

@@ -1,0 +1,86 @@
+local faction_discounts = {
+	["stalker"]  = { stalker = 1.05, bandit = 0.7 , csky = 1   , dolg = 1   , freedom = 1.05, killer = 0.8 , army = 0.8 , ecolog = 1.05, monolith = 0.5 , renegade = 0.7 , greh = 0.5 , isg = 0.5 },
+	["bandit"]   = { stalker = 0.7 , bandit = 1.05, csky = 0.7 , dolg = 0.6 , freedom = 1.05, killer = 1.1 , army = 0.6 , ecolog = 0.6 , monolith = 0.5 , renegade = 1.2 , greh = 0.5 , isg = 0.9 },
+	["csky"]     = { stalker = 1   , bandit = 0.7 , csky = 1.05, dolg = 1   , freedom = 1   , killer = 1.1 , army = 0.8 , ecolog = 1.15, monolith = 0.5 , renegade = 0.5 , greh = 0.5 , isg = 0.9 },
+	["dolg"]     = { stalker = 1   , bandit = 0.6 , csky = 1   , dolg = 1.05, freedom = 0.5 , killer = 0.7 , army = 1.1 , ecolog = 1.1 , monolith = 0.5 , renegade = 0.5 , greh = 0.5 , isg = 0.5 },
+	["freedom"]  = { stalker = 1   , bandit = 1.05, csky = 1   , dolg = 0.5 , freedom = 1.05, killer = 0.95, army = 0.7 , ecolog = 1.05, monolith = 0.5 , renegade = 0.8 , greh = 0.5 , isg = 0.9 },
+	["killer"]   = { stalker = 0.8 , bandit = 1.1 , csky = 1.1 , dolg = 0.5 , freedom = 0.95, killer = 1.05, army = 0.7 , ecolog = 0.95, monolith = 0.5 , renegade = 0.8 , greh = 0.5 , isg = 1.1 },
+	["army"]     = { stalker = 0.8 , bandit = 0.6 , csky = 0.8 , dolg = 0.7 , freedom = 0.7 , killer = 0.7 , army = 1.05, ecolog = 1.15, monolith = 0.5 , renegade = 0.5 , greh = 0.5 , isg = 0.5 },
+	["ecolog"]   = { stalker = 1.05, bandit = 0.6 , csky = 1.15, dolg = 1.05, freedom = 1.05, killer = 0.95, army = 1.15, ecolog = 1.05, monolith = 0.5 , renegade = 0.5 , greh = 0.5 , isg = 0.8 },
+	["monolith"] = { stalker = 0.5 , bandit = 0.5 , csky = 0.5 , dolg = 0.5 , freedom = 0.5 , killer = 0.5 , army = 0.5 , ecolog = 0.5 , monolith = 1.05, renegade = 0.5 , greh = 1.2 , isg = 0.5 },
+	["renegade"] = { stalker = 0.7 , bandit = 1.2 , csky = 0.5 , dolg = 0.5 , freedom = 0.8 , killer = 0.8 , army = 0.5 , ecolog = 0.5 , monolith = 0.5 , renegade = 1.05, greh = 0.5 , isg = 0.8 },
+	["greh"]     = { stalker = 0.5 , bandit = 0.5 , csky = 0.5 , dolg = 0.5 , freedom = 0.5 , killer = 0.5 , army = 0.5 , ecolog = 0.5 , monolith = 0.5 , renegade = 0.5 , greh = 1.05, isg = 0.5 },
+	["isg"]      = { stalker = 0.5 , bandit = 0.8 , csky = 0.9 , dolg = 0.5 , freedom = 0.9 , killer = 1.1 , army = 0.5 , ecolog = 0.8 , monolith = 1.2 , renegade = 0.8 , greh = 0.5 , isg = 1.05}
+}
+
+local level_multipliers = {
+	["jupiter"]                 = -0.2,
+	["l09_deadcity"]            = -0.05,
+	["l10_limansk"]             = -0.1,
+	["l10_red_forest"]          = -0,1,
+	["l11_hospital"]            = -0.2,
+	["l11_pripyat"]             = -0.2,
+	["l12_stancia"]             = -0.4,
+	["l12_stancia_2"]           = -0.4,
+	["l13_generators"]			= -0.4,
+	["pripyat"]					= -0.2,
+	["zaton"]					= -0.3
+}
+
+GetCost = utils_item.get_item_cost
+get_trader_community = faction_stocks.get_trader_community
+
+local multiplier = 1
+local use_north_level_mul = true
+local use_goodwill_mul = true
+local use_ignore_faction_goodwill = false
+local use_reputation_mul = true
+local use_north_level_mul = true
+local goodwill_mul = 2
+local rep_mul = 2
+
+function utils_item.get_item_cost(obj, profile)
+	--printf("# <HARU> Item: [%s]", obj:section())
+    --printf("# <HARU> Mode: [%s]", profile.mode)
+    return profile.mode == 1 and GetCost(obj, profile) * multiplier or GetCost(obj, profile) * clamp((2 - multiplier), 0.5, 5)
+end
+
+
+function ActorMenu_on_trade_started()
+	local actor = db.actor
+    local trader_npc = mob_trade.GetTalkingNpc()
+    local actor_faction = str_explode(character_community(actor), "_")[2]
+    local trader_faction = get_trader_community(trader_npc, actor_community)
+	local goodwill = relation_registry.community_goodwill(trader_faction, 0)
+	local current_level = level.name()
+	local reputation = actor:character_reputation()
+    printf("- <HARU> Talking NPC: [%s]", trader_npc:section())
+	printf("- <HARU> Actor community: [%s]", actor_faction)
+	printf("~ <HARU> Squad community: [%s]", trader_faction)
+	printf("~ <HARU> Goodwill: [%s]", goodwill)
+	printf("~ <HARU> Reputation: [%s]", reputation)
+	multiplier = 1 -- reset the multiplier
+	multiplier = use_faction_discounts and faction_discounts[actor_faction][trader_faction] or multiplier
+    if (actor_faction == trader_faction and use_goodwill_mul) or (use_ignore_faction_goodwill and use_goodwill_mul) then
+        multiplier = multiplier * (1 + (goodwill * 0.0002 * goodwill_mul))
+    end
+	multiplier = use_reputation_mul and multiplier * (1 + (reputation * 0.00005 * rep_mul)) or multiplier
+	multiplier = use_north_level_mul and multiplier * (1 + (level_multipliers[current_level] or 0)) or multiplier
+	printf("~ <HARU> Multiplier: [%s]", multiplier)
+end
+
+function on_option_change()
+	use_faction_discounts = faction_economy_mcm.get_config("use_faction_discounts")
+	use_goodwill_mul = faction_economy_mcm.get_config("use_goodwill_mul")
+	use_ignore_faction_goodwill = faction_economy_mcm.get_config("use_ignore_faction_goodwill")
+	use_reputation_mul = faction_economy_mcm.get_config("use_reputation_mul")
+	use_north_level_mul = faction_economy_mcm.get_config("use_north_level_mul")
+	goodwill_mul = faction_economy_mcm.get_config("goodwill_mul")
+	rep_mul = faction_economy_mcm.get_config("rep_mul")
+end
+
+function on_game_start()
+    RegisterScriptCallback("ActorMenu_on_trade_started", ActorMenu_on_trade_started)
+	RegisterScriptCallback("on_option_change", on_option_change)
+    on_option_change()
+end
