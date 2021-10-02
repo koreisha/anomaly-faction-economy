@@ -42,7 +42,7 @@ local rep_mul = 2
 function utils_item.get_item_cost(obj, profile)
 	--printf("# <HARU> Item: [%s]", obj:section())
     --printf("# <HARU> Mode: [%s]", profile.mode)
-    return profile.mode == 1 and GetCost(obj, profile) * multiplier or GetCost(obj, profile) * clamp((2 - multiplier), 0.5, 5)
+    return profile.mode == 1 and GetCost(obj, profile) * clamp(multiplier, 0, 2) or GetCost(obj, profile) * clamp((2 - multiplier), 0.65, 5)
 end
 
 
