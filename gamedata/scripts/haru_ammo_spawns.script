@@ -1,13 +1,5 @@
 local GetAmmo = utils_item.get_ammo
 local math_random = math.random
-local math_floor = math.floor
-
-local bad_ammo = {
-    ["bad"] = true,
-    ["verybad"] = true,
-    ["self"] = true -- ???
-    
-}
 
 function spawn_special(supply_level)
     return clamp(math_random(0, 2), 0, 2) + math_random(supply_level)
@@ -17,39 +9,22 @@ function spawn_normal(supply_level)
     return clamp(math_random(0, 6), 2, 4) + (math_random(supply_level) * 2)
 end
 
--- some prefixes of special ammo from various addons and vanilla
-local special_ammo = {
-    ["ap"] = true,
-    ["hydro"] = true,
-    ["dart"] = true,
-    ["zhekan"] = true,
-    ["barrikada"] = true,
-    ["ppm"] = true,
-    ["ss190"] = true,
-    ["pbp"] = true,
-    ["7h14"] = true,
-    ["ps"] = true,
-    ["ep"] = true,
-    ["pmm"] = true
-}
-
 function custom_ammo_spawn(npc)
     if trader_autoinject.get_trader_type(npc) ~= trader_autoinject.SUPPLIER then return end
     local supply_level = trader_autoinject.supply_level(npc, true) or 0
     local to_spawn = {}
 
     npc:iterate_inventory(function(owner, item)
-        local sec = item:section()
-        if IsWeapon(item) then
-            local ammo_table = GetAmmo(sec, item:id(), true)
-            for ammo, v in pairs(ammo_table) do
-                ammo_str = str_explode(ammo, "_")
-				
-                if not (bad_ammo[ammo_str[#ammo_str]] or ammo_str[2] == "knife") then -- IsMelee check is useless omegalul
+        if IsWeapon(item) and (not IsItem("fake_ammo_wpn", sec)) then
+            local ammo_table = GetAmmo(item:section(), item:id(), false)
+            --printf(utils_data.print_table(ammo_table, "ammo_class", true))
+
+            for k, ammo in pairs(ammo_table) do
+                if k % 3 == 1 then -- 1 - normal, 2 - bad, 0 - verybad
                     if not to_spawn[ammo] then
-                        to_spawn[ammo] = special_ammo[ammo_str[#ammo_str]] and spawn_special(supply_level) or spawn_normal(supply_level)
+                        to_spawn[ammo] = k > 1 and spawn_special(supply_level) or spawn_normal(supply_level)
                     else
-                        to_spawn[ammo] = to_spawn[ammo] + (special_ammo[ammo_str[#ammo_str]] and clamp(math_random(-2,1), 0, 1) or math_random(1,2))
+                        to_spawn[ammo] = to_spawn[ammo] + (k > 1 and clamp(math_random(-2, 1), 0, 1) or math_random(1, 2))
                     end
                 end
             end
@@ -58,6 +33,7 @@ function custom_ammo_spawn(npc)
         end
     end, npc)
 
+    printf(utils_data.print_table(to_spawn, "Spawned Ammo", true))
     trader_autoinject.spawn_items(npc, to_spawn)
 end
 

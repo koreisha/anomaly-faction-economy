@@ -10,7 +10,7 @@ function change_faction_stock(npc)
         local to_spawn = {}
         npc:iterate_inventory(function(owner, item)
             local sec = item:section()
-            if not (IsWeapon(item) or IsOutfit(item) or IsHeadgear(item)) then
+            if not (IsWeapon(item) or IsOutfit(item) or IsHeadgear(item) or IsAmmo(item)) then
                 if to_spawn[sec] then
                     to_spawn[sec] = roll_odds(chance_for_extra_item) and to_spawn[sec] + 1 or to_spawn[sec]
                 else
