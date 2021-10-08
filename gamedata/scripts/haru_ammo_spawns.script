@@ -1,0 +1,69 @@
+local GetAmmo = utils_item.get_ammo
+local math_random = math.random
+local math_floor = math.floor
+
+local bad_ammo = {
+    ["bad"] = true,
+    ["verybad"] = true,
+    ["self"] = true -- ???
+    
+}
+
+function spawn_special(supply_level)
+    return clamp(math_random(0, 2), 0, 2) + math_random(supply_level)
+end
+
+function spawn_normal(supply_level)
+    return clamp(math_random(0, 6), 2, 4) + (math_random(supply_level) * 2)
+end
+
+-- some prefixes of special ammo from various addons and vanilla
+local special_ammo = {
+    ["ap"] = true,
+    ["hydro"] = true,
+    ["dart"] = true,
+    ["zhekan"] = true,
+    ["barrikada"] = true,
+    ["ppm"] = true,
+    ["ss190"] = true,
+    ["pbp"] = true,
+    ["7h14"] = true,
+    ["ps"] = true,
+    ["ep"] = true,
+    ["pmm"] = true
+}
+
+function custom_ammo_spawn(npc)
+    if trader_autoinject.get_trader_type(npc) ~= trader_autoinject.SUPPLIER then return end
+    local supply_level = trader_autoinject.supply_level(npc, true) or 0
+    local to_spawn = {}
+
+    npc:iterate_inventory(function(owner, item)
+        local sec = item:section()
+        if IsWeapon(item) then
+            local ammo_table = GetAmmo(sec, item:id(), true)
+            for ammo, v in pairs(ammo_table) do
+                ammo_str = str_explode(ammo, "_")
+				
+                if not (bad_ammo[ammo_str[#ammo_str]] or ammo_str[2] == "knife") then -- IsMelee check is useless omegalul
+                    if not to_spawn[ammo] then
+                        to_spawn[ammo] = special_ammo[ammo_str[#ammo_str]] and spawn_special(supply_level) or spawn_normal(supply_level)
+                    else
+                        to_spawn[ammo] = to_spawn[ammo] + (special_ammo[ammo_str[#ammo_str]] and clamp(math_random(-2,1), 0, 1) or math_random(1,2))
+                    end
+                end
+            end
+        elseif IsAmmo(item) then
+            alife_release(item)
+        end
+    end, npc)
+
+    trader_autoinject.spawn_items(npc, to_spawn)
+end
+
+TraderAuto = trader_autoinject.update
+
+function trader_autoinject.update(npc)
+    TraderAuto(npc)
+    custom_ammo_spawn(npc)
+end

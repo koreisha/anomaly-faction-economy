@@ -14,17 +14,17 @@ local faction_discounts = {
 }
 
 local level_multipliers = {
-	["jupiter"]                 = -0.2,
+	["jupiter"]                 = -0.1,
 	["l09_deadcity"]            = -0.05,
-	["l10_limansk"]             = -0.1,
-	["l10_red_forest"]          = -0,1,
+	["l10_limansk"]             = -0.15,
+	["l10_red_forest"]          = -0,15,
 	["l11_hospital"]            = -0.2,
 	["l11_pripyat"]             = -0.2,
 	["l12_stancia"]             = -0.4,
 	["l12_stancia_2"]           = -0.4,
 	["l13_generators"]			= -0.4,
 	["pripyat"]					= -0.2,
-	["zaton"]					= -0.3
+	["zaton"]					= -0.1
 }
 
 GetCost = utils_item.get_item_cost
@@ -35,22 +35,24 @@ local use_north_level_mul = true
 local use_goodwill_mul = true
 local use_ignore_faction_goodwill = false
 local use_reputation_mul = true
-local use_north_level_mul = true
 local goodwill_mul = 2
 local rep_mul = 2
 
 function utils_item.get_item_cost(obj, profile)
 	--printf("# <HARU> Item: [%s]", obj:section())
     --printf("# <HARU> Mode: [%s]", profile.mode)
-    return profile.mode == 1 and GetCost(obj, profile) * clamp(multiplier, 0, 2) or GetCost(obj, profile) * clamp((2 - multiplier), 0.65, 5)
+    return profile.mode == 1 and GetCost(obj, profile) * clamp(multiplier, 0, 2) or GetCost(obj, profile) * clamp(2 - multiplier, 0.65, 5)
 end
-
+--[[
+	~ <HARU> Goodwill: [3000]
+	~ <HARU> Reputation: [4000]
+]]
 
 function ActorMenu_on_trade_started()
 	local actor = db.actor
     local trader_npc = mob_trade.GetTalkingNpc()
     local actor_faction = str_explode(character_community(actor), "_")[2]
-    local trader_faction = get_trader_community(trader_npc, actor_community)
+    local trader_faction = get_trader_community(trader_npc, actor_faction)
 	local goodwill = relation_registry.community_goodwill(trader_faction, 0)
 	local current_level = level.name()
 	local reputation = actor:character_reputation()
@@ -60,9 +62,9 @@ function ActorMenu_on_trade_started()
 	printf("~ <HARU> Goodwill: [%s]", goodwill)
 	printf("~ <HARU> Reputation: [%s]", reputation)
 	multiplier = 1 -- reset the multiplier
-	multiplier = use_faction_discounts and faction_discounts[actor_faction][trader_faction] or multiplier
+	multiplier = use_faction_discounts and faction_discounts[actor_faction][trader_faction] - 0.1 or multiplier
     if (actor_faction == trader_faction and use_goodwill_mul) or (use_ignore_faction_goodwill and use_goodwill_mul) then
-        multiplier = multiplier * (1 + (goodwill * 0.0002 * goodwill_mul))
+        multiplier = multiplier * (1 + (goodwill * 0.0001 * goodwill_mul))
     end
 	multiplier = use_reputation_mul and multiplier * (1 + (reputation * 0.00005 * rep_mul)) or multiplier
 	multiplier = use_north_level_mul and multiplier * (1 + (level_multipliers[current_level] or 0)) or multiplier
