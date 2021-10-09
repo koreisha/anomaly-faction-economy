@@ -8,9 +8,13 @@
 * Prices scale with location, the more northern it is - the higher the deficit (and so are the prices).
 * Other factions now sell their gear only after you reach certain goodwill level with them.
 * Trader of your faction now sells more items with certain chance.
+* Ammo spawns based on weapons in stock.
 * Configs in MCM for all of the above
 
 ## Changelog:
+1.2
+- added new mechanic for spawning ammo. Now it spawns based on weapons sold by trader.
+- some rebalances
 
 1.1 
 - fixed a nil crash when trader has no supply level
