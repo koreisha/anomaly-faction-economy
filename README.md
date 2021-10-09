@@ -11,6 +11,9 @@
 * Configs in MCM for all of the above
 
 ## Changelog:
+1.2
+- added new mechanic for spawning ammo. Now it spawns based on weapons sold by trader.
+- some rebalances
 
 1.1 
 - fixed a nil crash when trader has no supply level
