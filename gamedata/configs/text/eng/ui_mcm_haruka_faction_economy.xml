@@ -52,16 +52,16 @@
 	<string id="ui_mcm_faction_economy_rep_mul">
 		<text>Reputation price multiplier factor</text>
 	</string>
-	<string id="ui_mcm_ammo_amount_special">
+	<string id="ui_mcm_faction_economy_ammo_amount_special">
 		<text>Amount of special ammo</text>
 	</string>
-	<string id="ui_mcm_ammo_amount">
+	<string id="ui_mcm_faction_economy_ammo_amount">
 		<text>Amount of normal ammo</text>
 	</string>
-	<string id="ui_mcm_ammo_amount_special_desc">
-		<text>Amount of special (AP, HP, slugs, darts etc.) ammo, that would be spawned in stock based on weapon sold by trader.</text>
+	<string id="ui_mcm_faction_economy_ammo_amount_special_desc">
+		<text>Amount of special (AP, HP, slugs, darts etc.) ammo, that would be spawned in stock based on weapons sold by trader.</text>
 	</string>
-	<string id="ui_mcm_ammo_amount_desc">
-		<text>Amount of normal ammo, that would be spawned in stock based on weapon sold by trader.</text>
+	<string id="ui_mcm_faction_economy_ammo_amount_desc">
+		<text>Amount of normal ammo, that would be spawned in stock based on weapons sold by trader.</text>
 	</string>
 </string_table>
