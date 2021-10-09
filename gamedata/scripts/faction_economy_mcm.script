@@ -8,11 +8,12 @@ function on_mcm_load()
 				{ id = "use_reputation_mul" 			, type = "check", val = 1, def = true},
 				{ id = "use_north_level_mul" 			, type = "check", val = 1, def = true},
 				{ id = "goodwill_mul"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
-				{ id = "rep_mul"  						, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
+				{ id = "rep_mul"  						, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
 				{ id = "line"	     					, type = "line" },
-				{ id = "chance_for_extra_item"  		, type = "track", val = 2, min = 0, max = 100, step = 1, def = 40},
-				{ id = "required_supply_level"			, type = "track", val = 2, min = 0, max = 5, step = 1, def = 2}
-				
+				{ id = "chance_for_extra_item"  		, type = "track", val = 2, min = 0, max = 100, 	step = 1, def = 40},
+				{ id = "required_supply_level"			, type = "track", val = 2, min = 0, max = 5, 	step = 1, def = 2},
+				{ id = "ammo_amount"					, type = "track", val = 2, min = 0, max = 10, 	step = 1, def = 4},
+				{ id = "ammo_amount_special"			, type = "track", val = 2, min = 0, max = 5, 	step = 1, def = 2}
 			}
 		}
     return op
@@ -27,7 +28,9 @@ local defaults = {
 	["chance_for_extra_item"] = 40,
 	["goodwill_mul"] = 2,
 	["rep_mul"] = 1,
-	["required_supply_level"] = 2
+	["required_supply_level"] = 2,
+	["ammo_amount_special"] = 2,
+	["ammo_amount"] = 4
 }
 
 

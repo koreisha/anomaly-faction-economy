@@ -52,4 +52,16 @@
 	<string id="ui_mcm_faction_economy_rep_mul">
 		<text> оэфф. множител€ цен от репутации</text>
 	</string>
+	<string id="ui_mcm_ammo_amount_special">
+		<text> оличество особенных патронов</text>
+	</string>
+	<string id="ui_mcm_ammo_amount">
+		<text> оличество обычных патронов</text>
+	</string>
+	<string id="ui_mcm_ammo_amount_special_desc">
+		<text> оличество особенных (бронебойные, экспансивные, жеканы, дротики и т.д.) патронов, которое будет по€вл€тьс€ у торговца после пополнени€ ассортимента в зависимости от оружи€ в продаже.</text>
+	</string>
+	<string id="ui_mcm_ammo_amount_desc">
+		<text> оличество обычных патронов, которое будет по€вл€тьс€ у торговца после пополнени€ ассортимента в зависимости от оружи€ в продаже.</text>
+	</string>
 </string_table>
