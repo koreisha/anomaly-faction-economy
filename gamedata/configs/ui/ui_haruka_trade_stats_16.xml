@@ -1,0 +1,17 @@
+<w>
+    <!-- Left side -->
+    <trader x="0" y="0" width="377" height="768" stretch="1">
+        <level x="265" y="28" width="217" height="16">
+			<text align="l" font="letterica18" color="ui_2"/>
+		</level>
+        <multiplier x="265" y="48" width="217" height="16">
+			<text align="l" font="letterica18" color="ui_7"/>
+		</multiplier>
+    </trader>
+    <!-- Right side -->
+	<player x="648" y="0" width="377" height="768" stretch="1">
+        <multiplier x="265" y="48" width="217" height="16">
+			<text align="l" font="letterica18" color="ui_7"/>
+		</multiplier>
+    </player>
+</w>

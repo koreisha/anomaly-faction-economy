@@ -5,25 +5,25 @@ function custom_ammo_spawn(npc)
     if trader_autoinject.get_trader_type(npc) ~= trader_autoinject.SUPPLIER then return end
     local supply_level = trader_autoinject.supply_level(npc, true) or 0
     local to_spawn = {}
-
-    npc:iterate_inventory(function(owner, item)
-        if IsWeapon(item) and (not IsItem("fake_ammo_wpn", sec)) then
-            local ammo_table = GetAmmo(item:section(), item:id(), false)
+	local function itr_ammo(owner, item)
+		if IsWeapon(item) and (not IsItem("fake_ammo_wpn", sec)) then
+			local ammo_table = GetAmmo(item:section(), item:id(), false)
 			-- tiers(k): 1 - fmj,    4 - hp,  7 - ap
 			-- types(%): 1 - normal, 2 - bad, 0 - verybad
-            for k, ammo in pairs(ammo_table) do
-                if k % 3 == 1 then
-                    if not to_spawn[ammo] then
-                        to_spawn[ammo] = k > 1 and spawn_special(supply_level) or spawn_normal(supply_level)
-                    else
-                        to_spawn[ammo] = to_spawn[ammo] + (k > 1 and spawn_special(supply_level, true) or spawn_normal(supply_level, true))
-                    end
-                end
-            end
-        elseif IsAmmo(item) then
-            alife_release(item)
-        end
-    end, npc)
+			for k, ammo in pairs(ammo_table) do
+				if k % 3 == 1 then 
+					if not to_spawn[ammo] then
+						to_spawn[ammo] = k > 1 and spawn_special(supply_level) or spawn_normal(supply_level)
+					else
+						to_spawn[ammo] = to_spawn[ammo] + (k > 1 and spawn_special(supply_level, true) or spawn_normal(supply_level, true))
+					end
+				end
+			end
+		elseif IsAmmo(item) then
+			alife_release(item)
+		end
+	end
+    npc:iterate_inventory(itr_ammo, npc)
     trader_autoinject.spawn_items(npc, to_spawn)
 end
 

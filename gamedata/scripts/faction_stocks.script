@@ -1,15 +1,39 @@
 local required_supply_level = 2
 local chance_for_extra_item = 40
+local format_table = utils_data.print_table
+
+local math_random = math.random
+
+local function roll_odds(odds)
+    return odds >= math_random(1, 100) and true or false
+end
 
 function change_faction_stock(npc)
     if trader_autoinject.get_trader_type(npc) ~= trader_autoinject.SUPPLIER then return end
     local actor_community = str_explode(character_community(db.actor), "_")[2]
     local trader_community = get_trader_community(npc, actor_community)
     local supply_level = trader_autoinject.supply_level(npc, true) or (required_supply_level)
+    local current_required = required_supply_level
+    local profile = trade_manager.get_trade_profile(npc:id())
+    local cfg = trade_manager.get_trade_cfg(profile.cfg_ltx)
+    local buy_supplies = cfg:r_string_ex("trader", "buy_supplies")
+
+    if buy_supplies then
+        local condlist = xr_logic.parse_condlist(npc, "trader", "buy_supplies", buy_supplies)
+        local max_supplies = condlist[1][1]
+        current_required = str_explode(max_supplies, "_")
+        current_required = tonumber(current_required[#current_required])
+        if not current_required or current_required > required_supply_level  then
+            current_required = required_supply_level
+        end
+    end
+
     if actor_community == trader_community then
         local to_spawn = {}
-        npc:iterate_inventory(function(owner, item)
+
+        local function itr_friend(owner, item)
             local sec = item:section()
+
             if not (IsWeapon(item) or IsOutfit(item) or IsHeadgear(item) or IsAmmo(item)) then
                 if to_spawn[sec] then
                     to_spawn[sec] = roll_odds(chance_for_extra_item) and to_spawn[sec] + 1 or to_spawn[sec]
@@ -17,14 +41,18 @@ function change_faction_stock(npc)
                     to_spawn[sec] = roll_odds(chance_for_extra_item) and 1 or nil
                 end
             end
-        end, npc)
+        end
+
+        npc:iterate_inventory(itr_friend, npc)
         trader_autoinject.spawn_items(npc, to_spawn)
     elseif supply_level < required_supply_level then
-        npc:iterate_inventory(function(owner, item)
+        local function itr_nonfriend(owner, item)
             if IsWeapon(item) or IsOutfit(item) or IsHeadgear(item) then
                 alife_release(item)
             end
-        end, npc)
+        end
+
+        npc:iterate_inventory(itr_nonfriend, npc)
     end
 end
 
@@ -36,42 +64,37 @@ function trader_autoinject.update(npc)
 end
 
 function on_option_change()
-	required_supply_level = faction_economy_mcm.get_config("required_supply_level")
-	chance_for_extra_item = faction_economy_mcm.get_config("chance_for_extra_item")
+    required_supply_level = faction_economy_mcm.get_config("required_supply_level")
+    chance_for_extra_item = faction_economy_mcm.get_config("chance_for_extra_item")
 end
 
 function on_game_start()
-	RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_option_change", on_option_change)
     on_option_change()
 end
 
 -- Utility functions
 local faction_table = game_relations.factions_table
 
-function roll_odds(odds)
-    return odds >= math.random(1, 100) and true or false
-end
-
 local furniture = {
     ["esc_m_trader"] = true,
-	["red_m_lesnik"] = true
+    ["red_m_lesnik"] = true
 }
 
 local blacklisted_comms = {
-	["trader"] = true,
-	["monster"] = true
+    ["trader"] = true,
+    ["monster"] = true
 }
 
 function get_trader_community(npc, default)
-	if furniture[npc:name()] then -- I don't know why and I don't want to know why, but they fuck up everything
-		return "stalker"
-	end
-	local community = character_community(npc)
-	if not blacklisted_comms[community] then return community end
+    if furniture[npc:name()] then return "stalker" end -- I don't know why and I don't want to know why, but they fuck up everything
+    local community = character_community(npc)
+    if not blacklisted_comms[community] then return community end
     local squad_community = get_object_squad(npc):get_squad_community()
-	if not blacklisted_comms[squad_community] then
-		return squad_community
-	else
-		return default
-	end
+
+    if not blacklisted_comms[squad_community] then
+        return squad_community
+    else
+        return default
+    end
 end

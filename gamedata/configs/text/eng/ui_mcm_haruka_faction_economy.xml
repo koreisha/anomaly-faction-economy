@@ -64,4 +64,10 @@
 	<string id="ui_mcm_faction_economy_ammo_amount_desc">
 		<text>Amount of normal ammo, that would be spawned in stock based on weapons sold by trader.</text>
 	</string>
+	<string id="st_haruka_sulpplies_level">
+		<text>Supply lvl.</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>Multiplier</text>
+	</string>
 </string_table>
