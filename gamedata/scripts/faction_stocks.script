@@ -15,9 +15,9 @@ function change_faction_stock(npc)
     local supply_level = trader_autoinject.supply_level(npc, true) or (required_supply_level)
     local current_required = required_supply_level
     local profile = trade_manager.get_trade_profile(npc:id())
+    if not profile then return end
     local cfg = trade_manager.get_trade_cfg(profile.cfg_ltx)
     local buy_supplies = cfg:r_string_ex("trader", "buy_supplies")
-
     if buy_supplies then
         local condlist = xr_logic.parse_condlist(npc, "trader", "buy_supplies", buy_supplies)
         local max_supplies = condlist[1][1]
@@ -27,7 +27,6 @@ function change_faction_stock(npc)
             current_required = required_supply_level
         end
     end
-
     if actor_community == trader_community then
         local to_spawn = {}
 
@@ -42,7 +41,6 @@ function change_faction_stock(npc)
                 end
             end
         end
-
         npc:iterate_inventory(itr_friend, npc)
         trader_autoinject.spawn_items(npc, to_spawn)
     elseif supply_level < required_supply_level then
@@ -51,7 +49,6 @@ function change_faction_stock(npc)
                 alife_release(item)
             end
         end
-
         npc:iterate_inventory(itr_nonfriend, npc)
     end
 end
@@ -90,8 +87,9 @@ function get_trader_community(npc, default)
     if furniture[npc:name()] then return "stalker" end -- I don't know why and I don't want to know why, but they fuck up everything
     local community = character_community(npc)
     if not blacklisted_comms[community] then return community end
-    local squad_community = get_object_squad(npc):get_squad_community()
-
+    local squad = get_object_squad(npc)
+    if not (squad) then return default end
+    local squad_community = squad:get_squad_community()
     if not blacklisted_comms[squad_community] then
         return squad_community
     else

@@ -22,6 +22,7 @@ local use_ignore_faction_goodwill = false
 local use_reputation_mul = true
 local goodwill_mul = 2
 local rep_mul = 2
+local use_trade_GUI = true
 local gt = game.translate_string
 
 function utils_item.get_item_cost(obj, profile)
@@ -52,31 +53,34 @@ function ActorMenu_on_trade_started()
 	printf("~ <HARU> Reputation: [%s]", reputation)
 	printf("~ <HARU> Community Relation [%s]", community_relation)
 	multiplier = 1 -- reset the multiplier
-	multiplier = use_faction_discounts and (multiplier + (community_relation * 0.0001)) - 0.1 or multiplier - 0.1
+	multiplier = use_faction_discounts and (multiplier + (community_relation * 0.000075)) - 0.15 or multiplier - 0.15
     if (actor_faction == trader_faction and use_goodwill_mul) or (use_ignore_faction_goodwill and use_goodwill_mul) then
         multiplier = multiplier * (1 + (goodwill * 0.0001 * goodwill_mul))
     end
 	multiplier = use_reputation_mul and multiplier * (1 + (reputation * 0.00005 * rep_mul)) or multiplier
 	multiplier = use_north_level_mul and multiplier * (1 + (level_multipliers[current_level] or 0)) or multiplier
 	printf("~ <HARU> Multiplier: [%s]", multiplier)
+	if not (use_trade_GUI) then return end
 	if trader_autoinject.get_trader_type(trader_npc) == trader_autoinject.SUPPLIER then
 		local supply_level = trader_autoinject.supply_level(trader_npc, true) or 1
-		CreateTimeEvent("haruka_show_ui_trade", "haruka_show_ui_trade", 0.1, start, supply_level, multiplier)
+		CreateTimeEvent("haruka_show_ui_trade", "haruka_show_ui_trade", 0.1, start, multiplier, supply_level)
+	else
+		CreateTimeEvent("haruka_show_ui_trade", "haruka_show_ui_trade", 0.1, start, multiplier)
 	end
 end
 
-function start(supply_level, multiplier)
+function start(multiplier, supply_level)
 	if (not GUI) then
 		GUI = UITradeStats()
 		get_hud():AddDialogToRender(GUI)
 	end
-	GUI:ShowTradeStats(supply_level, multiplier)
+	GUI:ShowTradeStats(multiplier, supply_level)
 	return true
 end
 
 function close()
 	if (not GUI) then 
-		return 
+		return
 	end
 	get_hud():RemoveDialogToRender(GUI)
 	GUI:Close()
@@ -104,8 +108,12 @@ function UITradeStats:InitControls()
 	self.player_multiplier = xml:InitTextWnd("player:multiplier", self.player_dialog)
 end
 
-function UITradeStats:ShowTradeStats(supply_level, multiplier)
-	self.trader_supply_level:SetText(gt("st_haruka_sulpplies_level").. " " .. supply_level)
+function UITradeStats:ShowTradeStats(multiplier, supply_level)
+	self.trader_supply_level:Show(false)
+	if supply_level then
+		self.trader_supply_level:SetText(gt("st_haruka_sulpplies_level").. " " .. supply_level)
+		self.trader_supply_level:Show(true)
+	end
 	self.trader_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(2 - multiplier, 0.65, 5), 2))
 	self.player_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(multiplier, 0, 2), 2))
 	self.trader_dialog:Show(true)
@@ -125,6 +133,7 @@ function on_option_change()
 	use_north_level_mul = faction_economy_mcm.get_config("use_north_level_mul")
 	goodwill_mul = faction_economy_mcm.get_config("goodwill_mul")
 	rep_mul = faction_economy_mcm.get_config("rep_mul")
+	use_trade_GUI = faction_economy_mcm.get_config("use_trade_GUI")
 end
 
 function on_game_start()

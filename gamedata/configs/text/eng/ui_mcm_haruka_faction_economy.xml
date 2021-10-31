@@ -64,6 +64,18 @@
 	<string id="ui_mcm_faction_economy_ammo_amount_desc">
 		<text>Amount of normal ammo, that would be spawned in stock based on weapons sold by trader.</text>
 	</string>
+	<string id="ui_mcm_faction_economy_use_trade_GUI">
+		<text>Enable additional info in trade menu</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_special_ammo_spawns">
+		<text>Use special ammo spawns</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_trade_GUI_desc">
+		<text>Enables additonal info next to the trader portrait with info about current multiplier and supply lvl.</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_special_ammo_spawns_desc">
+		<text>Enables special ammo spawn rules for traders. Instead of using trader files, ammo instead gets spawned based on sold weapons.</text>
+	</string>
 	<string id="st_haruka_sulpplies_level">
 		<text>Supply lvl.</text>
 	</string>

@@ -1,34 +1,40 @@
 function on_mcm_load()
-    op ={ id= "faction_economy", sh=true ,gr =
+    op = { id= "faction_economy", sh=true ,gr =
 			{
-				{ id = "title", type= "slide", link= "ui_options_slider_economy_diff", text="ui_mcm_faction_economy_title", size= {512,50},spacing= 20 },
+				{ id = "title"							, type = "slide", link = "ui_options_slider_economy_diff", text = "ui_mcm_faction_economy_title", size = {512,50}, spacing = 20 },
+				{ id = "use_trade_GUI" 					, type = "check", val = 1, def = true},
+				{ id = "line"	     					, type = "line" },
 				{ id = "use_faction_discounts" 			, type = "check", val = 1, def = true},
 				{ id = "use_goodwill_mul" 				, type = "check", val = 1, def = true},
 				{ id = "use_ignore_faction_goodwill" 	, type = "check", val = 1, def = true},
 				{ id = "use_reputation_mul" 			, type = "check", val = 1, def = true},
 				{ id = "use_north_level_mul" 			, type = "check", val = 1, def = true},
-				{ id = "goodwill_mul"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
-				{ id = "rep_mul"  						, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 2},
+				{ id = "goodwill_mul"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1.5},
+				{ id = "rep_mul"  						, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
 				{ id = "line"	     					, type = "line" },
 				{ id = "chance_for_extra_item"  		, type = "track", val = 2, min = 0, max = 100, 	step = 1, def = 40},
 				{ id = "required_supply_level"			, type = "track", val = 2, min = 0, max = 5, 	step = 1, def = 2},
+				{ id = "line"	     					, type = "line" },
+				{ id = "use_special_ammo_spawns" 		, type = "check", val = 1, def = true},
 				{ id = "ammo_amount"					, type = "track", val = 2, min = 0, max = 10, 	step = 1, def = 4},
 				{ id = "ammo_amount_special"			, type = "track", val = 2, min = 0, max = 5, 	step = 1, def = 2}
 			}
-		}
+		 }
     return op
 end
 
 local defaults = {
+	["use_trade_GUI"] = true,
     ["use_faction_discounts"] = true,
 	["use_goodwill_mul"] = true,
 	["use_ignore_faction_goodwill"] = false,
 	["use_reputation_mul"] = true,
 	["use_north_level_mul"] = true,
 	["chance_for_extra_item"] = 40,
-	["goodwill_mul"] = 2,
+	["goodwill_mul"] = 1.5,
 	["rep_mul"] = 1,
 	["required_supply_level"] = 2,
+	["use_special_ammo_spawns"] = true,
 	["ammo_amount_special"] = 2,
 	["ammo_amount"] = 4
 }

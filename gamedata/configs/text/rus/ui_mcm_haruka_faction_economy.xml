@@ -64,4 +64,22 @@
 	<string id="ui_mcm_faction_economy_ammo_amount_desc">
 		<text>Количество обычных патронов, которые будут появляться у торговцев в зависимости от продаваемого оружия.</text>
 	</string>
+	<string id="ui_mcm_faction_economy_use_trade_GUI">
+		<text>Дополнительная информация в меню торговли</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_special_ammo_spawns">
+		<text>Использовать особенный спавн патронов</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_trade_GUI_desc">
+		<text>Добавляет информацию в меню торговли о уровне ассортимента и текущем множителе цен.</text>
+	</string>
+	<string id="ui_mcm_faction_economy_use_special_ammo_spawns_desc">
+		<text>Включает измененный спавн патронов. Вместо использования конфигов торговца - спавн патронов происходит на основе оружия в ассортименте.</text>
+	</string>
+	<string id="st_haruka_sulpplies_level">
+		<text>Ассортимент lvl.</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>Множитель</text>
+	</string>
 </string_table>

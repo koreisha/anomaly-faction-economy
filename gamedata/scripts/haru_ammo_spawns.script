@@ -46,16 +46,21 @@ function spawn_normal(supply_level, additional)
 	end
 end
 
+local use_special_ammo_spawns = true
+
 TraderAuto = trader_autoinject.update
 
 function trader_autoinject.update(npc)
     TraderAuto(npc)
-    custom_ammo_spawn(npc)
+    if use_special_ammo_spawns then
+        custom_ammo_spawn(npc)
+    end
 end
 
 function on_option_change()
 	aaSP = faction_economy_mcm.get_config("ammo_amount_special")
 	aaN = faction_economy_mcm.get_config("ammo_amount")
+    use_special_ammo_spawns = faction_economy_mcm.get_config("use_special_ammo_spawns")
 end
 
 function on_game_start()
