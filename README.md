@@ -12,6 +12,10 @@
 * Configs in MCM for all of the above
 
 ## Changelog:
+1.4
+- reworked UI as monkeypatch
+- fixed layering of the elements
+
 1.3
 - fixed nimble
 - added new UI
