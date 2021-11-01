@@ -12,6 +12,11 @@
 * Configs in MCM for all of the above
 
 ## Changelog:
+1.3
+- fixed nimble
+- added new UI
+- changed the way faction multiplier gets calculated
+
 1.2
 - added new mechanic for spawning ammo. Now it spawns based on weapons sold by trader.
 - some rebalances
