@@ -1,0 +1,52 @@
+local use_trade_GUI = true
+local gt = game.translate_string
+
+OriginalInitControls = ui_inventory.UIInventory.InitControls
+
+function ui_inventory.UIInventory.InitControls(self)
+	OriginalInitControls(self)
+	self.haruka_xml = CScriptXmlInit()
+	local haruka_xml = self.haruka_xml
+	haruka_xml:ParseFile("ui_haruka_trade_stats.xml")
+	self.haruka_trader_supply_level = haruka_xml:InitTextWnd("trader:level", self.npc_dialog)
+	self.haruka_trader_multiplier = haruka_xml:InitTextWnd("trader:multiplier", self.npc_dialog)
+	self.haruka_player_multiplier = haruka_xml:InitTextWnd("player:multiplier", self.player_dialog)
+end
+
+OriginalUpdateCharacter = ui_inventory.UIInventory.UpdateCharacter
+
+function ui_inventory.UIInventory.UpdateCharacter(self)
+	local npc = self:GetPartner()
+    local supply_level = a_faction_prices.supply_level
+    local multiplier = a_faction_prices.multiplier
+	if npc and (not (self.npc_is_box or npc:has_info("npcx_is_companion"))) then
+		self.haruka_trader_supply_level:Show(false)
+		if supply_level then
+			self.haruka_trader_supply_level:SetText(gt("st_haruka_sulpplies_level").. " " .. supply_level)
+			self.haruka_trader_supply_level:Show(true)
+		end
+		self.haruka_trader_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(2 - multiplier, 0.65, 5), 2))
+		self.haruka_player_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(multiplier, 0, 2), 2))
+	end
+	OriginalUpdateCharacter(self)
+end
+
+OriginalReset = ui_inventory.UIInventory.Reset
+
+function ui_inventory.UIInventory.Reset(self, obj)
+	local mode = self.mode
+	local mT = mode == "trade"
+	self.haruka_trader_supply_level:Show(mT and use_trade_GUI)
+	self.haruka_trader_multiplier:Show(mT and use_trade_GUI)
+	self.haruka_player_multiplier:Show(mT and use_trade_GUI)
+	OriginalReset(self, obj)
+end
+
+function on_option_change()
+    use_trade_GUI = faction_economy_mcm.get_config("use_trade_GUI")
+end
+
+function on_game_start()
+    RegisterScriptCallback("on_option_change", on_option_change)
+    on_option_change()
+end
