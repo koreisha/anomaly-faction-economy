@@ -17,6 +17,10 @@ get_trader_community = faction_stocks.get_trader_community
 
 multiplier = 1
 supply_level = nil
+
+-- ARTI surplus/deficit
+local sales = {}
+
 local use_north_level_mul = true
 local use_goodwill_mul = true
 local use_ignore_faction_goodwill = false
@@ -24,6 +28,9 @@ local use_reputation_mul = true
 local goodwill_mul = 2
 local rep_mul = 2
 local gt = game.translate_string
+
+function categorize_item(obj)
+end
 
 function utils_item.get_item_cost(obj, profile)
 	--printf("# <HARU> Item: [%s]", obj:section())

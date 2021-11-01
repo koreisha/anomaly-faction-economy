@@ -82,4 +82,38 @@
 	<string id="st_haruka_multiplier">
 		<text>Multiplier</text>
 	</string>
+
+
+	<string id="st_deal_dolg_buy_ammo">
+		<text>Attention stalkers: Duty is planning several raids on mutant lairs in the area. Volunteers and munitions are welcome: speak with Petrenko.</text>	
+	</string>
+	<string id="st_deal_freedom_1">
+		<text>Heey stalkers, we're having a BLOWOUT sale!...oh shit, Lenka died in that last emission? Well, anyway, swing by for great deals on %s!</text>	
+	</string>
+
+	<string id="st_haruka_multiplier">
+		<text>weapons</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>outfits</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>new suits</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>ammo</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>meds</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>survival gear</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>food and drink</text>
+	</string>
+	<string id="st_haruka_multiplier">
+		<text>mutant samples</text>
+	</string>
+
 </string_table>
