@@ -23,7 +23,7 @@ function ui_inventory.UIInventory.UpdateCharacter(self)
 		self.haruka_trader_supply_level:Show(false)
 		if supply_level then
 			self.haruka_trader_supply_level:SetText(gt("st_haruka_sulpplies_level").. " " .. supply_level)
-			self.haruka_trader_supply_level:Show(true)
+			self.haruka_trader_supply_level:Show(use_trade_GUI)
 		end
 		self.haruka_trader_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(2 - multiplier, 0.65, 5), 2))
 		self.haruka_player_multiplier:SetText(gt("st_haruka_multiplier") .. " " .. round_idp(clamp(multiplier, 0, 2), 2))
