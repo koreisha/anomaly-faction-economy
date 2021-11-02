@@ -6,8 +6,8 @@ OriginalInitControls = ui_inventory.UIInventory.InitControls
 function ui_inventory.UIInventory.InitControls(self)
 	OriginalInitControls(self)
 	self.haruka_xml = CScriptXmlInit()
+	self.haruka_xml:ParseFile("ui_haruka_trade_stats.xml")
 	local haruka_xml = self.haruka_xml
-	haruka_xml:ParseFile("ui_haruka_trade_stats.xml")
 	self.haruka_trader_supply_level = haruka_xml:InitTextWnd("trader:level", self.npc_dialog)
 	self.haruka_trader_multiplier = haruka_xml:InitTextWnd("trader:multiplier", self.npc_dialog)
 	self.haruka_player_multiplier = haruka_xml:InitTextWnd("player:multiplier", self.player_dialog)
