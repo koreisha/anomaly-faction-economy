@@ -17,6 +17,14 @@ get_trader_community = faction_stocks.get_trader_community
 
 multiplier = 1
 supply_level = nil
+
+-- ARTI surplus/deficit
+local ini_deals = ini_file("trade_deals\\importer.ltx")
+local kind_to_category = {}
+local deals_by_trader = {}
+local deals = {}
+current_trader = nil
+
 local use_north_level_mul = true
 local use_goodwill_mul = true
 local use_ignore_faction_goodwill = false
@@ -25,10 +33,18 @@ local goodwill_mul = 2
 local rep_mul = 2
 local gt = game.translate_string
 
+
 function utils_item.get_item_cost(obj, profile)
 	--printf("# <HARU> Item: [%s]", obj:section())
     --printf("# <HARU> Mode: [%s]", profile.mode)
-    return profile.mode == 1 and GetCost(obj, profile) * clamp(multiplier, 0, 2) or GetCost(obj, profile) * clamp(2 - multiplier, 0.65, 5)
+	local deal_mult = 1
+	if deals[current_trader] then
+		local kind = SYS_GetParam(0, obj:section(), "kind")
+		if deals[current_trader].category[kind_to_category[kind]] then
+			deal_mult = deals[current_trader].multiplier
+		end
+	end
+    return profile.mode == 1 and GetCost(obj, profile) * clamp(multiplier, 0, 2) * deal_mult or GetCost(obj, profile) * clamp(2 - multiplier, 0.65, 5) * deal_mult
 end
 --[[
 	~ <HARU> Goodwill: [3000]
@@ -41,6 +57,7 @@ function ActorMenu_on_trade_started()
     local actor_faction = str_explode(character_community(actor), "_")[2]
     local trader_faction = get_trader_community(trader_npc, actor_faction)
 	local goodwill = relation_registry.community_goodwill(trader_faction, 0)
+	current_trader = trader_npc:name()
 	local current_level = level.name()
 	local community_relation = relation_registry.community_relation(actor_faction, trader_faction)
 	local reputation = actor:character_reputation()
@@ -76,8 +93,82 @@ function on_option_change()
 	rep_mul = faction_economy_mcm.get_config("rep_mul")
 end
 
+function ingest_presets()
+	-- map item kinds to categories
+	local ini_categories = ini_file("trade_deals\\deal_categories.ltx")
+    ini_categories:section_for_each(function(section)
+        local line_count = ini_categories:line_count(section) or 0
+        for i=0,line_count-1 do
+            local junk1, kind, junk2 = ini_categories:r_line(section, i, "", "")
+			kind_to_category[kind] = section
+        end
+    end)
+	-- ingest names of possible deals
+	ini_deals:section_for_each(function(section)
+		local trader = ini_deals:r_string_ex(section, "trader")
+		if not deals_by_trader[trader] then deals_by_trader[trader] = {} end
+		table.insert(deals_by_trader[trader], section)
+	end)
+
+end
+
+function pick_deal(npc_name)	
+	local deal_to_activate = nil
+	-- pick a deal for this npc
+	local deal_copy = {}
+	copy_table(deals_by_trader[npc_name], deal_copy)
+	if #deals_by_trader[npc_name] == 1 then 
+		return deals_by_trader[npc_name][1] 
+	else
+		shuffle_table(deal_copy)
+		for k,v in deal_copy do
+			local chance = SYS_GetParam(2, v, "chance") or 0.5
+			if math.random() <= chance then
+				return v
+			end
+		end
+	end
+end
+
+-- roll a new deal
+-- return the duration to keep the deal for
+function activate_deal(npc_name)
+	if not deals_by_trader[npc_name] then return 0 end
+
+	-- pick a deal for this npc
+	local deal_to_activate = pick_deal(npc_name)
+	
+	-- store deal details
+	local deal_data = {}
+	deal_data.category = {}
+	local categories = str_explode(SYS_GetParam(0, deal_to_activate, "category"), ",")
+	for k,v in pairs(categories) do
+		deal_data.category[v] = true
+	end
+	deal_data.multiplier = SYS_GetParam(2, deal_to_activate, "multiplier")
+	deals[npc_name] = deal_data
+	local duration = SYS_GetParam(2, duration, "multiplier") or 3
+	duration = duration * 3600
+	return duration
+end
+
+function deactivate_deal(npc_name)
+	deals[npc_name] = nil
+end
+
+function save_state(mdata)
+	mdata.deals = deals
+end
+function load_state(mdata)
+	deals = mdata.deals or {}
+end
+
+
+
 function on_game_start()
     RegisterScriptCallback("ActorMenu_on_trade_started", ActorMenu_on_trade_started)
 	RegisterScriptCallback("on_option_change", on_option_change)
-    on_option_change()
+    on_option_change()	
+	RegisterScriptCallback("load_state",load_state)
+	RegisterScriptCallback("save_state",save_state)
 end
