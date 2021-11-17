@@ -22,7 +22,7 @@ function change_faction_stock(npc)
         local condlist = xr_logic.parse_condlist(npc, "trader", "buy_supplies", buy_supplies)
         local max_supplies = condlist[1][1]
         current_required = str_explode(max_supplies, "_")
-        current_required = tonumber(current_required[#current_required])
+        current_required = tonumber(current_required[#current_required]) or 0
         if not current_required or current_required > required_supply_level  then
             current_required = required_supply_level
         end
@@ -43,7 +43,7 @@ function change_faction_stock(npc)
         end
         npc:iterate_inventory(itr_friend, npc)
         trader_autoinject.spawn_items(npc, to_spawn)
-    elseif supply_level < required_supply_level then
+    elseif supply_level < current_required then
         local function itr_nonfriend(owner, item)
             if IsWeapon(item) or IsOutfit(item) or IsHeadgear(item) then
                 alife_release(item)

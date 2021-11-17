@@ -107,7 +107,7 @@
 	<string id="st_barkeep_food_sale">
 		<text>.</text>	
 	</string>
-
+	<!--
 	<string id="st_haruka_multiplier">
 		<text>weapons</text>
 	</string>
@@ -132,5 +132,5 @@
 	<string id="st_haruka_multiplier">
 		<text>mutant samples</text>
 	</string>
-
+	-->
 </string_table>
